@@ -1,0 +1,54 @@
+{
+  "contractName": "AgentChannel",
+  "constructorInputs": [
+    { "name": "owner", "type": "pubkey" },
+    { "name": "provider", "type": "pubkey" },
+    { "name": "timeout", "type": "int" }
+  ],
+  "abi": [
+    {
+      "name": "settle",
+      "inputs": [
+        { "name": "providerSig", "type": "sig" },
+        { "name": "ownerVoucher", "type": "datasig" },
+        { "name": "amountBytes", "type": "bytes8" }
+      ]
+    },
+    {
+      "name": "refund",
+      "inputs": [
+        { "name": "ownerSig", "type": "sig" }
+      ]
+    }
+  ],
+  "bytecode": "OP_3 OP_PICK OP_0 OP_NUMEQUAL OP_IF OP_6 OP_ROLL OP_SIZE OP_8 OP_EQUALVERIFY OP_5 OP_ROLL OP_3 OP_PICK OP_CHECKSIGVERIFY OP_ACTIVEBYTECODE OP_SHA256 OP_OVER OP_CAT OP_6 OP_ROLL OP_SWAP OP_3 OP_PICK OP_CHECKDATASIGVERIFY OP_BIN2NUM OP_INPUTINDEX OP_UTXOVALUE OP_OVER 2202 OP_GREATERTHANOREQUAL OP_VERIFY OP_2DUP d007 OP_SUB OP_LESSTHANOREQUAL OP_VERIFY OP_0 OP_OUTPUTBYTECODE 76a914 OP_5 OP_ROLL OP_HASH160 OP_CAT 88ac OP_CAT OP_EQUALVERIFY OP_0 OP_OUTPUTVALUE OP_2 OP_PICK OP_NUMEQUALVERIFY OP_1 OP_OUTPUTBYTECODE 76a914 OP_4 OP_ROLL OP_HASH160 OP_CAT 88ac OP_CAT OP_EQUALVERIFY OP_1 OP_OUTPUTVALUE OP_SWAP OP_ROT OP_SUB e803 OP_SUB OP_GREATERTHANOREQUAL OP_NIP OP_NIP OP_ELSE OP_3 OP_ROLL OP_1 OP_NUMEQUALVERIFY OP_3 OP_ROLL OP_SWAP OP_CHECKSIGVERIFY OP_SWAP OP_CHECKLOCKTIMEVERIFY OP_2DROP OP_1 OP_ENDIF",
+  "source": "pragma cashscript ^0.14.0;\n\n// Unidirectional micropayment channel for AI agents.\n// The agent (owner) locks a budget here. For every API call it signs an off-chain\n// voucher for the CUMULATIVE amount owed. The provider can settle at any time with\n// the latest voucher: it receives exactly that amount and the remainder is forced\n// back to the owner. After `timeout` the owner can reclaim everything.\ncontract AgentChannel(pubkey owner, pubkey provider, int timeout) {\n    function settle(sig providerSig, datasig ownerVoucher, bytes8 amountBytes) {\n        require(checkSig(providerSig, provider));\n\n        // Voucher is bound to this exact channel (contract bytecode) -> no cross-channel replay.\n        bytes msg = sha256(this.activeBytecode) + amountBytes;\n        require(checkDataSig(ownerVoucher, msg, owner));\n\n        int amount = int(amountBytes);\n        int budget = tx.inputs[this.activeInputIndex].value;\n        require(amount >= 546);\n        require(amount <= budget - 2000);\n\n        require(tx.outputs[0].lockingBytecode == new LockingBytecodeP2PKH(hash160(provider)));\n        require(tx.outputs[0].value == amount);\n        require(tx.outputs[1].lockingBytecode == new LockingBytecodeP2PKH(hash160(owner)));\n        require(tx.outputs[1].value >= budget - amount - 1000);\n    }\n\n    function refund(sig ownerSig) {\n        require(checkSig(ownerSig, owner));\n        require(tx.time >= timeout);\n    }\n}\n",
+  "fingerprint": "cd461e94414dea4dfd2f242cfff3bac244c2fc06d5cf3e09bfaf8d0c0f56cc2c",
+  "debug": {
+    "bytecode": "5379009c63567a825888557a5379adc1a8787e567a7c5379bb81c0c678022202a2696e02d00794a16900cd0376a914557aa97e0288ac7e8800cc52799d51cd0376a914547aa97e0288ac7e8851cc7c7b9402e80394a2777767537a519d537a7cad7cb16d5168",
+    "sourceMap": "9:4:25:5;;;;;:59:9:77;;;;;10:25:10:36;;:38::46;;:8::49:1;13:27:13:46:0;:20::47:1;:50::61:0;:20:::1;14:29:14:41:0;;:43::46;:48::53;;:8::56:1;16:21:16:37;17:31:17:52:0;:21::59:1;18:16:18:22:0;:26::29;:16:::1;:8::31;19:16:19:32:0;:35::39;:26:::1;:16;:8::41;21:27:21:28:0;:16::45:1;:49::92:0;:82::90;;:74::91:1;:49::92;;;:8::94;22:27:22:28:0;:16::35:1;:39::45:0;;:8::47:1;23:27:23:28:0;:16::45:1;:49::89:0;:82::87;;:74::88:1;:49::89;;;:8::91;24:27:24:28:0;:16::35:1;:39::45:0;:48::54;:39:::1;:57::61:0;:39:::1;:8::63;9:79:25:5;;:4;27::30::0;;;;28:25:28:33;;:35::40;:8::43:1;29:27:29:34:0;:8::36:1;27:34:30:5;;8:0:31:1",
+    "logs": [],
+    "requires": [
+      { "ip": 17, "line": 10 },
+      { "ip": 27, "line": 14 },
+      { "ip": 34, "line": 18 },
+      { "ip": 39, "line": 19 },
+      { "ip": 49, "line": 21 },
+      { "ip": 54, "line": 22 },
+      { "ip": 64, "line": 23 },
+      { "ip": 73, "line": 24 },
+      { "ip": 83, "line": 28 },
+      { "ip": 85, "line": 29 }
+    ],
+    "sourceTags": "5:9:pv;70:71:sc"
+  },
+  "compiler": {
+    "name": "cashc",
+    "version": "0.14.0",
+    "options": {
+      "enforceFunctionParameterTypes": true,
+      "enforceLocktimeGuard": true
+    }
+  },
+  "updatedAt": "2026-11-13T19:28:21.984Z"
+}
