@@ -1,32 +1,15 @@
-# React + TypeScript + Vite
+# AgentTab pre-hackathon prototype (disclosure)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This repo is the **pre-existing work** for the BCH BLAZE 2026 entry
+[AgentTab](https://github.com/Aakash074/agenttab) (live: https://agenttab-bch.onrender.com).
 
-Currently, two official plugins are available:
+**No hosted demo of the prototype existed; its pre-kickoff state is commit
+[631e586](https://github.com/Aakash074/agenttab-prototype/tree/631e586).** The prototype had no UI.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+What it contains (all created before the official build start, 2026-11-14 14:00 UTC):
+- `contracts/AgentChannel.cash`: a 31-line CashScript covenant sketch for a voucher-based payment channel.
+- `test/channel.test.mjs`: 5 tests against a mock network (`node test/channel.test.mjs`).
+- An empty Vite + React + TypeScript template (`src/`), unchanged.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Timeline: see [PRE_HACKATHON_DISCLOSURE.md](PRE_HACKATHON_DISCLOSURE.md). The submitted project lives in the
+main repo, which was started from scratch after kickoff; its README lists what changed against this prototype.
