@@ -1,0 +1,10 @@
+PASS (rejected) provider overclaims beyond voucher
+   reason: AgentChannel.cash:22 Require statement failed at input 0 in contract AgentChannel.cash at line 22.
+PASS (rejected) forged voucher (provider-signed)
+   reason: AgentChannel.cash:14 Require statement failed at input 0 in contract AgentChannel.cash at line 14.
+PASS (rejected) voucher from another channel
+   reason: AgentChannel.cash:14 Require statement failed at input 0 in contract AgentChannel.cash at line 14.
+PASS (rejected) owner shortchanged
+   reason: AgentChannel.cash:24 Require statement failed at input 0 in contract AgentChannel.cash at line 24.
+PASS valid settle with signed voucher
+5 passed, 0 failed
